@@ -43,5 +43,7 @@ startGame: repeat {
     }
 } while answer != "нет"
 
+var field = Battleground()
+field.printField()
 
 

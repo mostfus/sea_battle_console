@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum Cell: Int {
+enum Life: Int {
     case one = 1, two, three, four
     
     var size: Int {
@@ -45,13 +45,13 @@ enum State: String {
 
 
 struct Ship {
-    var size: Cell
+    var size: Life
     var body: Rect
     var direction: Direction
     var deckArray = [[Int]: State]()
     var state: State
     
-    init(size: Cell, body: Rect, direction: Direction) {
+    init(size: Life, body: Rect, direction: Direction) {
         self.size = size
         self.body = body
         self.direction = direction
@@ -59,5 +59,3 @@ struct Ship {
         state = State.afloat
     }
 }
-
-

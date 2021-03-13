@@ -10,7 +10,7 @@ import Foundation
 // print description for game, rules, comand
 print("Здаров! Хочешь сыграть в морской бой?") // use Message file
 
-// MARK: - Property
+// MARK: - Propertyes 
 
 // read answer user
 var answer = ""

@@ -7,7 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		FCAF194425FCE30100153704 /* Battleground.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCAF194325FCE30100153704 /* Battleground.swift */; };
+		FCAF194725FCE3DC00153704 /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCAF194625FCE3DC00153704 /* Message.swift */; };
 		FCB8B3AC25F63D4800D61F84 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCB8B3AB25F63D4800D61F84 /* main.swift */; };
+		FCFA5A8225F640A6008F4AF0 /* Ship.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCFA5A8125F640A6008F4AF0 /* Ship.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -23,8 +26,11 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		FCAF194325FCE30100153704 /* Battleground.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Battleground.swift; sourceTree = "<group>"; };
+		FCAF194625FCE3DC00153704 /* Message.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
 		FCB8B3A825F63D4800D61F84 /* Sea_battle */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Sea_battle; sourceTree = BUILT_PRODUCTS_DIR; };
 		FCB8B3AB25F63D4800D61F84 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
+		FCFA5A8125F640A6008F4AF0 /* Ship.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Ship.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -58,6 +64,9 @@
 			isa = PBXGroup;
 			children = (
 				FCB8B3AB25F63D4800D61F84 /* main.swift */,
+				FCAF194625FCE3DC00153704 /* Message.swift */,
+				FCFA5A8125F640A6008F4AF0 /* Ship.swift */,
+				FCAF194325FCE30100153704 /* Battleground.swift */,
 			);
 			path = Sea_battle;
 			sourceTree = "<group>";
@@ -120,6 +129,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				FCB8B3AC25F63D4800D61F84 /* main.swift in Sources */,
+				FCAF194725FCE3DC00153704 /* Message.swift in Sources */,
+				FCFA5A8225F640A6008F4AF0 /* Ship.swift in Sources */,
+				FCAF194425FCE30100153704 /* Battleground.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -10,13 +10,8 @@ import Foundation
 // print description for game, rules, comand
 print("Здаров! Хочешь сыграть в морской бой?") // use Message file
 
-// MARK: - Propertyes 
-
 // read answer user
 var answer = ""
-
-
-// MARK: - Methods
 
 // function that controls the logic of the game
 func game() {

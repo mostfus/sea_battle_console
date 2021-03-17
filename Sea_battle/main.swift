@@ -12,21 +12,40 @@ print("Здаров! Хочешь сыграть в морской бой?") // 
 
 // read answer user
 var answer = ""
+let letters = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j"]
+let nums = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]
+
+// func for computer fire
+func computerFire(_ computerField: inout Battleground, _ userField: inout Battleground) {
+    var computerFire: Bool
+    repeat {
+        print(computerField.shootsData.count)
+        let shot = computerField.shootsData.randomElement()!
+        print(computerField.shootsData.count)
+        let h = letters[shot.key[0] - 1]
+        let w = String(shot.key[1])
+        computerFire = userField.fire(w, h)
+    } while computerFire
+}
 
 // function that controls the logic of the game
 func game() {
-    var userField = Battleground()
-    var computerField = Battleground()
+    print("\nПожалуйста введите свой ник:")
+    var userName = ""
+    if let answer = readLine() {
+        userName = answer
+    }
+    // попросить ввести ник для игры
+    var userField = Battleground(identifier: userName)
+    var computerField = Battleground(identifier: "Computer")
     var userCommand = [String]()
     let ask = true
-    let letters = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j"]
-    let nums = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]
     var game = true
     
     gameLoop: while game {
-        userField.printBattleground(printShip: true)
+        userField.printBattleground(true, whoseMove: userField.identifier)
         print("")
-        computerField.printBattleground(printShip: true)
+        computerField.printBattleground(false, whoseMove: computerField.identifier)
         
         askLoop: repeat {
             print("\nВведите команду:") // use message
@@ -36,9 +55,13 @@ func game() {
             }
             
             if userCommand.count == 2 && letters.contains(userCommand[0]) && nums.contains(userCommand[1])  {
-                guard computerField.fire(userCommand[1], userCommand[0]) else { continue gameLoop }
-                // ход компьютера
-                continue gameLoop
+                if computerField.fire(userCommand[1], userCommand[0]) {
+                    continue gameLoop
+                } else {
+                    // computer is fire
+                    computerFire(&computerField, &userField)
+                    continue gameLoop
+                }
             } else if userCommand.count > 0 {
                 switch userCommand[0] {
                 case "rules":

@@ -18,6 +18,9 @@ struct Battleground {
     var width = 10
     var arrayShips = [Ship]()
     var field = [[Int]: String]()
+    var score = 0
+    var identifier: String
+    var shootsData = [[Int] : Bool]()
     
     var fullHeight: Int {
         return height + 1
@@ -26,9 +29,17 @@ struct Battleground {
         return width + 1
     }
     
-    init() {
+    init(identifier: String) {
+        self.identifier = identifier
         createBattlegroud()
         addShipToBattleground()
+        
+        // create shoots for computer
+        for h in 1...height {
+            for w in 1...width {
+                shootsData[[h, w]] = true
+            }
+        }
     }
     
     // MARK: - Methods
@@ -148,6 +159,8 @@ struct Battleground {
         createShip(size: 1, direction: Direction[Int.random(in: 1...4)])
         createShip(size: 1, direction: Direction[Int.random(in: 1...4)])
         
+        score = arrayShips.count
+        
         // remove free zone and ships
         for (key, value) in field {
             if value == CellType[.miss] {
@@ -204,35 +217,43 @@ struct Battleground {
         let w = Letter[width]
         
         let cell = field[[h, w]]
+        
+        // check shipDeck for input coordinate (h, w)
+        ship: for index in arrayShips.indices {
+            if let shipDeck = arrayShips[index].shipCoordinate[[h, w]] {
+                if shipDeck != State.wounded.rawValue && shipDeck != State.killed.rawValue {
+                    arrayShips[index].woundedDeck(h, w)
+                    field[[h, w]] = State.wounded.rawValue
+                    // will launch when ship is dead
+                    if arrayShips[index].state == .killed {
+                        addFreeZone(arrayShips[index], CellType[.doNotShoot])
+                        for (key, value) in arrayShips[index].shipCoordinate {
+                            field[key] = value
+                        }
+                        score -= 1
+                    }
+                    print("Есть пробитие!")
+                    return true
+                } else {
+                    print("Ты уже стрелял сюда! Сюда не имеет смысла стрелять.") // add message
+                    return false
+                }
+            }
+        }
 
         switch cell {
         case CellType[.sea]:
             field[[h, w]] = CellType[.miss]
             return false
-        case CellType[.doNotShoot], CellType[.miss]:
+        default:
             print("Ты уже стрелял сюда! Сюда не имеет смысла стрелять.") // add message
             return false
-        default:
-            ship: for index in arrayShips.indices {
-                if let shipDeck = arrayShips[index].shipCoordinate[[h, w]] {
-                    if shipDeck != State.wounded.rawValue && shipDeck != State.killed.rawValue {
-                        arrayShips[index].woundedDeck(h, w)
-                        if arrayShips[index].state == .killed {
-                            addFreeZone(arrayShips[index], CellType[.doNotShoot])
-                        }
-                        print("Есть пробитие!")
-                        return true
-                    } else {
-                        print("Ты уже стрелял сюда! Сюда не имеет смысла стрелять.") // add message
-                        return false
-                    }
-                }
-            }
+            
         }
-        return false
     }
     
-    mutating func printBattleground(printShip: Bool) {
+    mutating func printBattleground(_ printShip: Bool, whoseMove: String) {
+        print("\n\(whoseMove)")
         spacePrint("      ")
         //print firstLine Letters
         for i in 1...10 {

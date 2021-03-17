@@ -9,4 +9,24 @@ import Foundation
 
 // contain all message for user
 
-// Добавить предупреждение, если игра отображается неправлильно, нужно настроить отступы между буквами 
+// Добавить предупреждение, если игра отображается неправлильно, нужно настроить отступы между буквами
+
+enum Message: String {
+    case firstLaunch, startGame, endGame, rules, commands, errorCommand, win, lose
+    // добавить фразы при выстреле и попадании и тд, мимо
+    
+    // фраза при которой выходит за диапозон поля ! Туда стрелять не имеет смысла там молоко
+    
+    // для попаданий убийств и промахов можно добавить несколько вариантов ответов, рандомно
+    
+    var description: String {
+        switch self {
+        case .firstLaunch:
+            return """
+Hello commander! Все гуд?
+"""
+        default:
+            return " "
+        }
+    }
+}

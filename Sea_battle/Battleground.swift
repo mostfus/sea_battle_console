@@ -7,40 +7,8 @@
 
 import Foundation
 
-enum Letter: Int {
-    case A = 0, B, C, D, E, F, G, H, I, J
-    
-    var value: Int {
-        return self.rawValue
-    }
-    
-    static subscript(index: Int) -> Letter {
-        return Letter(rawValue: index)!
-    }
-}
-
-enum CellType: String {
-    case border = "🔲"
-    case sea = "🟦"
-    case miss = "⚪️"
-    case doNotShoot = "🔸"
-    
-    static subscript(cellType: CellType) -> String {
-        switch cellType {
-        case .border:
-            return CellType.border.rawValue
-        case .sea:
-            return CellType.sea.rawValue
-        case .miss:
-            return CellType.miss.rawValue
-        case .doNotShoot:
-            return CellType.doNotShoot.rawValue
-        }
-    }
-}
-
 func spacePrint(_ text: Any) {
-    print("\(text) ", terminator: "")
+    print("\(text)", terminator: " ")
 }
 
 struct Battleground {
@@ -50,7 +18,6 @@ struct Battleground {
     var width = 10
     var arrayShips = [Ship]()
     var field = [[Int]: String]()
-    var arrayShoots = [[Int]: Bool]()
     
     var fullHeight: Int {
         return height + 1
@@ -122,7 +89,7 @@ struct Battleground {
             cell = field[[point.0, point.1]]!
             
             switch cell {
-            case "🟦" :
+            case CellType[.sea] :
                 var count = size
                 // check ship around
                 if direction == .north || direction == .south {
@@ -166,7 +133,7 @@ struct Battleground {
         for (key, value) in ship.shipCoordinate {
             field[key] = value
         }
-        addMiss(ship)
+        addFreeZone(ship, CellType.miss.rawValue)
     }
     
     private mutating func addShipToBattleground() {
@@ -181,24 +148,23 @@ struct Battleground {
         createShip(size: 1, direction: Direction[Int.random(in: 1...4)])
         createShip(size: 1, direction: Direction[Int.random(in: 1...4)])
         
-        // remove free zone
-        
+        // remove free zone and ships
         for (key, value) in field {
-            if value == "⚪️" {
-                field[key] = "🟦"
+            if value == CellType[.miss] {
+                field[key] = CellType[.sea]
             }
         }
     }
     
     // make a free zone around the ship
-    private mutating func addMiss(_ ship: Ship) {
+    private mutating func addFreeZone(_ ship: Ship, _ typeCell: String) {
         var point = ship.origin
         var originPoint = point
         var lenght = ship.size
         
         func changeCell(_ point: Point) {
-            if field[[point.h, point.w]] == "🟦" {
-                field[[point.h, point.w]] = CellType[.miss]
+            if field[[point.h, point.w]] == CellType[.sea] || field[[point.h, point.w]] == CellType[.miss] {
+                field[[point.h, point.w]] = typeCell
             }
         }
         
@@ -233,16 +199,46 @@ struct Battleground {
         }
     }
     
-    func printField() {
+    mutating func fire(_ height: String, _ width: String) -> Bool {
+        let h = Int(height)!
+        let w = Letter[width]
+        
+        let cell = field[[h, w]]
+
+        switch cell {
+        case CellType[.sea]:
+            field[[h, w]] = CellType[.miss]
+            return false
+        case CellType[.doNotShoot], CellType[.miss]:
+            print("Ты уже стрелял сюда! Сюда не имеет смысла стрелять.") // add message
+            return false
+        default:
+            ship: for index in arrayShips.indices {
+                if let shipDeck = arrayShips[index].shipCoordinate[[h, w]] {
+                    if shipDeck != State.wounded.rawValue && shipDeck != State.killed.rawValue {
+                        arrayShips[index].woundedDeck(h, w)
+                        if arrayShips[index].state == .killed {
+                            addFreeZone(arrayShips[index], CellType[.doNotShoot])
+                        }
+                        print("Есть пробитие!")
+                        return true
+                    } else {
+                        print("Ты уже стрелял сюда! Сюда не имеет смысла стрелять.") // add message
+                        return false
+                    }
+                }
+            }
+        }
+        return false
+    }
+    
+    mutating func printBattleground(printShip: Bool) {
         spacePrint("      ")
         //print firstLine Letters
-        for i in 0...9 {
+        for i in 1...10 {
             let letter = Letter[i]
             spacePrint(letter)
             print(" ", terminator: "")
-            if i == 4 {
-                print(" ", terminator: "")
-            }
         }
         print("")
         // print field
@@ -251,13 +247,28 @@ struct Battleground {
             case 10:
                 spacePrint(h)
             case let x where x != 0 && x != fullHeight:
-                spacePrint(h)
                 spacePrint("")
+                spacePrint(h)
             default:
                 spacePrint("  ")
             }
             
-            for w in 0...fullWidth {
+            printCell: for w in 0...fullWidth {
+                if printShip {
+                    for value in arrayShips {
+                        if let cell = value[h, w] {
+                            spacePrint(cell)
+                            continue printCell
+                        }
+                    }
+                } else {
+                    // make ships invisible
+                    for (key, value) in field {
+                        if value == State.afloat.rawValue {
+                            field[key] = CellType[.sea]
+                        }
+                    }
+                }
                 let cell = field[[h, w]]!
                 spacePrint(cell)
             }

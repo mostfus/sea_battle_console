@@ -48,9 +48,9 @@ enum Direction: Int {
 }
 
 enum State: String {
-    case afloat = "✳️"
-    case wounded = "✴️"
-    case killed = "🅾️"
+    case afloat = "❎"
+    case wounded = "🟠"
+    case killed = "❌"
 }
 
 
@@ -58,11 +58,12 @@ struct Ship {
     // MARK: - Properties
     
     var size: Int
+    var life: Int
     var direction: Direction
     var origin: Point
     var shipCoordinate = [[Int]: String]()
     var state: State {
-        if size == 0 {
+        if life < 1 {
             return .killed
         } else {
             return .afloat
@@ -71,6 +72,7 @@ struct Ship {
     
     init(size: Int, direction: Direction, origin: Point) {
         self.size = size
+        self.life = size
         self.direction = direction
         self.origin = origin
         
@@ -102,5 +104,18 @@ struct Ship {
         }
     }
     
+    mutating func woundedDeck(_ h: Int,_ w: Int) {
+        shipCoordinate[[h, w]] = State.wounded.rawValue
+        life -= 1
+        if life < 1 {
+            for (key, _) in shipCoordinate {
+                shipCoordinate[key] = State.killed.rawValue
+            }
+        }
+    }
+    
     // subscript for access coordinate
+    subscript(_ h: Int, w: Int) -> String? {
+        return shipCoordinate[[h, w]]
+    }
 }

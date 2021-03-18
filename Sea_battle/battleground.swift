@@ -18,7 +18,7 @@ struct Battleground {
     var width = 10
     var arrayShips = [Ship]()
     var field = [[Int]: String]()
-    var score = 0
+    var score = 20
     var identifier: String
     var shootsData = [[Int] : Bool]()
     
@@ -70,8 +70,8 @@ struct Battleground {
         func checkValidPosition(h: Int, w: Int) -> Bool {
             var height = h
             var width = w
-            // check ship around cell
             
+            // check ship around cell
             guard field[[height, width]] != State.afloat.rawValue else { return true }
             width += Direction[.east]
             guard field[[height, width]] != State.afloat.rawValue else { return true }
@@ -148,18 +148,17 @@ struct Battleground {
     }
     
     private mutating func addShipToBattleground() {
-        createShip(size: 4, direction: Direction[Int.random(in: 1...4)])
-        createShip(size: 3, direction: Direction[Int.random(in: 1...4)])
-        createShip(size: 3, direction: Direction[Int.random(in: 1...4)])
-        createShip(size: 2, direction: Direction[Int.random(in: 1...4)])
-        createShip(size: 2, direction: Direction[Int.random(in: 1...4)])
-        createShip(size: 2, direction: Direction[Int.random(in: 1...4)])
-        createShip(size: 1, direction: Direction[Int.random(in: 1...4)])
-        createShip(size: 1, direction: Direction[Int.random(in: 1...4)])
-        createShip(size: 1, direction: Direction[Int.random(in: 1...4)])
-        createShip(size: 1, direction: Direction[Int.random(in: 1...4)])
+        var count = 1
+        var size = 4
         
-        score = arrayShips.count
+        // create all ships
+        while size > 0 {
+            for _ in 1...count {
+                createShip(size: size, direction: Direction[Int.random(in: 1...4)])
+            }
+            count += 1
+            size -= 1
+        }
         
         // remove free zone and ships
         for (key, value) in field {
@@ -212,9 +211,9 @@ struct Battleground {
         }
     }
     
-    mutating func fire(_ height: String, _ width: String) -> Bool {
-        let h = Int(height)!
-        let w = Letter[width]
+    mutating func fire(_ height: Int, _ width: Int, whoseFire: String) -> (wounded: Bool,killed: Bool) {
+        let h = height
+        let w = width
         
         let cell = field[[h, w]]
         
@@ -231,12 +230,15 @@ struct Battleground {
                             field[key] = value
                         }
                         score -= 1
+                        return (true, true)
                     }
+                    guard whoseFire != "Computer" else { return (true, false) }
                     print("Есть пробитие!")
-                    return true
+                    return (true, false)
                 } else {
+                    guard whoseFire != "Computer" else { return (false, false) }
                     print("Ты уже стрелял сюда! Сюда не имеет смысла стрелять.") // add message
-                    return false
+                    return (false, false)
                 }
             }
         }
@@ -244,10 +246,11 @@ struct Battleground {
         switch cell {
         case CellType[.sea]:
             field[[h, w]] = CellType[.miss]
-            return false
+            return (false, false)
         default:
+            guard whoseFire != "Computer" else { return (false, false) }
             print("Ты уже стрелял сюда! Сюда не имеет смысла стрелять.") // add message
-            return false
+            return (false, false)
             
         }
     }

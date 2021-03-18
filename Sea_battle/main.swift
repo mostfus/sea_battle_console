@@ -15,21 +15,19 @@ var answer = ""
 let letters = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j"]
 let nums = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]
 
-// func for computer fire
-func computerFire(_ computerField: inout Battleground, _ userField: inout Battleground) {
-    var computerFire: Bool
-    repeat {
-        print(computerField.shootsData.count)
-        let shot = computerField.shootsData.randomElement()!
-        print(computerField.shootsData.count)
-        let h = letters[shot.key[0] - 1]
-        let w = String(shot.key[1])
-        computerFire = userField.fire(w, h)
-    } while computerFire
+func clearTerminal() {
+    let cls = Process()
+    let out = Pipe()
+    cls.launchPath = "/usr/bin/clear"
+    cls.standardOutput = out
+    cls.launch()
+    cls.waitUntilExit()
+    print (String(data: out.fileHandleForReading.readDataToEndOfFile(), encoding: String.Encoding.utf8) ?? "")
 }
 
 // function that controls the logic of the game
 func game() {
+    clearTerminal()
     print("\nПожалуйста введите свой ник:")
     var userName = ""
     if let answer = readLine() {
@@ -38,11 +36,14 @@ func game() {
     // попросить ввести ник для игры
     var userField = Battleground(identifier: userName)
     var computerField = Battleground(identifier: "Computer")
+    // create matrix for computer attack
+    createMatrixField()
     var userCommand = [String]()
     let ask = true
     var game = true
     
     gameLoop: while game {
+        clearTerminal()
         userField.printBattleground(true, whoseMove: userField.identifier)
         print("")
         computerField.printBattleground(false, whoseMove: computerField.identifier)
@@ -55,7 +56,9 @@ func game() {
             }
             
             if userCommand.count == 2 && letters.contains(userCommand[0]) && nums.contains(userCommand[1])  {
-                if computerField.fire(userCommand[1], userCommand[0]) {
+                let h = Int(userCommand[1])!
+                let w = Letter[userCommand[0]]
+                if computerField.fire(h, w, whoseFire: userField.identifier).wounded {
                     continue gameLoop
                 } else {
                     // computer is fire

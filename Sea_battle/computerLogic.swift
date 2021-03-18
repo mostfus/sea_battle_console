@@ -19,6 +19,7 @@ var coordinateWounded = [[Int]: Bool]()
 var stateComputer = ComputerMove.shoot
 var lenghtShip = 0
 var rightDirection = true
+var directionForShoot = Direction.east
 
 // create matrix for computer attack
 func createMatrixField() {
@@ -50,19 +51,30 @@ func secondState() -> Direction {
 }
 
 func thirdState(direction: Direction) {
-    if rightDirection && attackField.keys.contains(nextPoint) {
-        if direction == .north || direction == .south {
-            nextPoint[0] += Direction[direction]
+    let getNextPoint = true
+    
+    find: repeat {
+        if rightDirection {
+            if direction == .north || direction == .south {
+                nextPoint[0] += Direction[direction]
+            } else {
+                nextPoint[1] += Direction[direction]
+            }
         } else {
-            nextPoint[1] += Direction[direction]
+            if direction == .north || direction == .south {
+                nextPoint[0] -= Direction[direction]
+            } else {
+                nextPoint[1] -= Direction[direction]
+            }
         }
-    } else {
-        if direction == .north || direction == .south {
-            nextPoint[0] -= Direction[direction]
-        } else {
-            nextPoint[1] -= Direction[direction]
+        
+        // next cell is avalible on field
+        if attackField.keys.contains(nextPoint) && attackField[nextPoint] != false {
+            break find
         }
-    }
+        nextPoint = firstPoint
+        rightDirection = false
+    } while getNextPoint
 }
 
 func allAvalibleDirectionShoot() {
@@ -97,7 +109,6 @@ func removeInvalidCell() {
 
 func computerFire(_ computerField: inout Battleground, _ userField: inout Battleground) {
     var result: (wounded: Bool,killed: Bool)
-    var directionForShoot = Direction.east
     
     repeat {
         switch stateComputer {
@@ -126,7 +137,6 @@ func computerFire(_ computerField: inout Battleground, _ userField: inout Battle
         } else if result.wounded && !result.killed && lenghtShip >= 2 {
             lenghtShip += 1
             stateComputer = .finish
-            rightDirection = true
             coordinateWounded[nextPoint] = false
             attackField[nextPoint] = false
         } else if !result.wounded && lenghtShip >= 2 {
@@ -135,9 +145,9 @@ func computerFire(_ computerField: inout Battleground, _ userField: inout Battle
             nextPoint = firstPoint
         } else if result.wounded && !result.killed && lenghtShip >= 0 {
             lenghtShip += 1
+            rightDirection = true
             coordinateWounded[nextPoint] = false
             attackField[nextPoint] = false
-            rightDirection = true
             if lenghtShip > 1 {
                 stateComputer = .finish
             } else {

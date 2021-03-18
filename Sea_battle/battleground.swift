@@ -7,10 +7,6 @@
 
 import Foundation
 
-func spacePrint(_ text: Any) {
-    print("\(text)", terminator: " ")
-}
-
 struct Battleground {
     // MARK: - Properties
     
@@ -255,6 +251,14 @@ struct Battleground {
         }
     }
     
+    mutating func makeShipInvisible() {
+        for (key, value) in field {
+            if value == State.afloat.rawValue {
+                field[key] = CellType[.sea]
+            }
+        }
+    }
+    
     mutating func printBattleground(_ printShip: Bool, whoseMove: String) {
         print("\n\(whoseMove)")
         spacePrint("      ")
@@ -285,13 +289,6 @@ struct Battleground {
                             continue printCell
                         }
                     }
-                } else {
-                    // make ships invisible
-                    for (key, value) in field {
-                        if value == State.afloat.rawValue {
-                            field[key] = CellType[.sea]
-                        }
-                    }
                 }
                 let cell = field[[h, w]]!
                 spacePrint(cell)
@@ -299,6 +296,4 @@ struct Battleground {
             print("")
         }
     }
-    
-    // subscript for access coordinate
 }

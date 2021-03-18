@@ -12,6 +12,7 @@
 		FCB8B3AC25F63D4800D61F84 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCB8B3AB25F63D4800D61F84 /* main.swift */; };
 		FCF1D6BF2600B43E0019E185 /* details_for_field.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCF1D6BE2600B43E0019E185 /* details_for_field.swift */; };
 		FCF1D6C226026E880019E185 /* computerLogic.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCF1D6C126026E880019E185 /* computerLogic.swift */; };
+		FCF1D6C92603BD1E0019E185 /* secondaryFunctions.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCF1D6C82603BD1E0019E185 /* secondaryFunctions.swift */; };
 		FCFA5A8225F640A6008F4AF0 /* ship.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCFA5A8125F640A6008F4AF0 /* ship.swift */; };
 /* End PBXBuildFile section */
 
@@ -34,6 +35,7 @@
 		FCB8B3AB25F63D4800D61F84 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		FCF1D6BE2600B43E0019E185 /* details_for_field.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = details_for_field.swift; sourceTree = "<group>"; };
 		FCF1D6C126026E880019E185 /* computerLogic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = computerLogic.swift; sourceTree = "<group>"; };
+		FCF1D6C82603BD1E0019E185 /* secondaryFunctions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = secondaryFunctions.swift; sourceTree = "<group>"; };
 		FCFA5A8125F640A6008F4AF0 /* ship.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ship.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -68,6 +70,7 @@
 			isa = PBXGroup;
 			children = (
 				FCB8B3AB25F63D4800D61F84 /* main.swift */,
+				FCF1D6C82603BD1E0019E185 /* secondaryFunctions.swift */,
 				FCAF194625FCE3DC00153704 /* message.swift */,
 				FCFA5A8125F640A6008F4AF0 /* ship.swift */,
 				FCF1D6C126026E880019E185 /* computerLogic.swift */,
@@ -140,6 +143,7 @@
 				FCFA5A8225F640A6008F4AF0 /* ship.swift in Sources */,
 				FCAF194425FCE30100153704 /* battleground.swift in Sources */,
 				FCF1D6BF2600B43E0019E185 /* details_for_field.swift in Sources */,
+				FCF1D6C92603BD1E0019E185 /* secondaryFunctions.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

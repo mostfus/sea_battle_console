@@ -57,7 +57,6 @@ func thirdState(direction: Direction) {
             nextPoint[1] += Direction[direction]
         }
     } else {
-        nextPoint = firstPoint
         if direction == .north || direction == .south {
             nextPoint[0] -= Direction[direction]
         } else {
@@ -133,6 +132,7 @@ func computerFire(_ computerField: inout Battleground, _ userField: inout Battle
         } else if !result.wounded && lenghtShip >= 2 {
             stateComputer = .finish
             rightDirection = false
+            nextPoint = firstPoint
         } else if result.wounded && !result.killed && lenghtShip >= 0 {
             lenghtShip += 1
             coordinateWounded[nextPoint] = false

@@ -59,3 +59,7 @@ enum CellType: String {
         }
     }
 }
+
+enum Identifier {
+    case user, computer
+}

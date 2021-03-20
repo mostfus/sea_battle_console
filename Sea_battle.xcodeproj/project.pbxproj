@@ -70,14 +70,30 @@
 			isa = PBXGroup;
 			children = (
 				FCB8B3AB25F63D4800D61F84 /* main.swift */,
-				FCF1D6C82603BD1E0019E185 /* secondaryFunctions.swift */,
-				FCAF194625FCE3DC00153704 /* message.swift */,
-				FCFA5A8125F640A6008F4AF0 /* ship.swift */,
 				FCF1D6C126026E880019E185 /* computerLogic.swift */,
+				FCF1D6CD2603E50E0019E185 /* SecondaryFiles */,
+				FCF1D6CB2603E4B00019E185 /* Objects */,
+			);
+			path = Sea_battle;
+			sourceTree = "<group>";
+		};
+		FCF1D6CB2603E4B00019E185 /* Objects */ = {
+			isa = PBXGroup;
+			children = (
+				FCFA5A8125F640A6008F4AF0 /* ship.swift */,
 				FCAF194325FCE30100153704 /* battleground.swift */,
 				FCF1D6BE2600B43E0019E185 /* details_for_field.swift */,
 			);
-			path = Sea_battle;
+			path = Objects;
+			sourceTree = "<group>";
+		};
+		FCF1D6CD2603E50E0019E185 /* SecondaryFiles */ = {
+			isa = PBXGroup;
+			children = (
+				FCF1D6C82603BD1E0019E185 /* secondaryFunctions.swift */,
+				FCAF194625FCE3DC00153704 /* message.swift */,
+			);
+			path = SecondaryFiles;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

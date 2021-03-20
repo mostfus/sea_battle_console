@@ -15,7 +15,7 @@ struct Battleground {
     var arrayShips = [Ship]()
     var field = [[Int]: String]()
     var score = 20
-    var identifier: String
+    var identifier: Identifier
     var shootsData = [[Int] : Bool]()
     
     var fullHeight: Int {
@@ -25,7 +25,7 @@ struct Battleground {
         return width + 1
     }
     
-    init(identifier: String) {
+    init(identifier: Identifier) {
         self.identifier = identifier
         createBattlegroud()
         addShipToBattleground()
@@ -207,7 +207,7 @@ struct Battleground {
         }
     }
     
-    mutating func fire(_ height: Int, _ width: Int, whoseFire: String) -> (wounded: Bool,killed: Bool) {
+    mutating func fire(_ height: Int, _ width: Int, whoseFire: Identifier) -> (wounded: Bool,killed: Bool) {
         let h = height
         let w = width
         
@@ -228,11 +228,11 @@ struct Battleground {
                         score -= 1
                         return (true, true)
                     }
-                    guard whoseFire != "Computer" else { return (true, false) }
+                    guard whoseFire == .computer else { return (true, false) }
                     print("Есть пробитие!")
                     return (true, false)
                 } else {
-                    guard whoseFire != "Computer" else { return (false, false) }
+                    guard whoseFire == .computer else { return (false, false) }
                     print("Ты уже стрелял сюда! Сюда не имеет смысла стрелять.") // add message
                     return (false, false)
                 }
@@ -244,7 +244,7 @@ struct Battleground {
             field[[h, w]] = CellType[.miss]
             return (false, false)
         default:
-            guard whoseFire != "Computer" else { return (false, false) }
+            guard whoseFire == .computer else { return (false, false) }
             print("Ты уже стрелял сюда! Сюда не имеет смысла стрелять.") // add message
             return (false, false)
             

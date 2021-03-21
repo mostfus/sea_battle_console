@@ -228,6 +228,7 @@ struct Battleground {
                         score -= 1
                         return (true, true)
                     }
+                    score -= 1
                     guard whoseFire == .computer else { return (true, false) }
                     print("Есть пробитие!")
                     return (true, false)

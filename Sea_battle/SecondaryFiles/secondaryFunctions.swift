@@ -45,11 +45,12 @@ func printComputerField(_ field: Battleground) {
     }
 }
 
+func printFieldAndMessage(_ message: Message) {
+    printAllField(userField, computerField)
+    print(message.description)
+}
+
 func printAllField(_ userField: Battleground, _ computerField: Battleground) {
-    // print id
-    spacePrint("\t \(userField.identifier)")
-    spacePrint("\t\t")
-    spacePrint("\t \(computerField.identifier)")
     print("")
     
     //print firstLine Letters

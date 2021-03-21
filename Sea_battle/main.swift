@@ -11,6 +11,10 @@ var answer = ""
 let letters = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j"]
 let nums = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]
 var startIndex = 0
+var userField = Battleground(identifier: .user)
+var computerField = Battleground(identifier: .computer)
+computerField.makeShipInvisible()
+var testField = Battleground(identifier: .test)
 
 // function that controls the logic of the game
 func game() -> Bool {
@@ -19,27 +23,18 @@ func game() -> Bool {
     var printLegend = true
     let ask = true
     let game = true
-    var userField = Battleground(identifier: .user)
-    var computerField = Battleground(identifier: .computer)
-    computerField.makeShipInvisible()
-    
-    clearTerminal()
-    print(Message.legend.description)
-    Thread.sleep(forTimeInterval: 5)
     
     // create matrix for computer attack
     createMatrixField()
 
     gameLoop: while game {
-        clearTerminal()
-        
         if printLegend {
+            clearTerminal()
             print(Message.legend.description)
-            Thread.sleep(forTimeInterval: 5)
+            printAllField(userField, computerField)
+            print("\nПример команды - b 1 или B 1")
             printLegend = false
         }
-    
-        printAllField(userField, computerField)
         
         askLoop: repeat {
             print(Message.enterCommand.description)
@@ -51,13 +46,21 @@ func game() -> Bool {
             if userCommand.count == 2 && letters.contains(userCommand[0]) && nums.contains(userCommand[1])  {
                 let h = Int(userCommand[1])!
                 let w = Letter[userCommand[0]]
-                // user fire
-                if computerField.fire(h, w, whoseFire: userField.identifier).wounded {
-                    continue gameLoop
+                // user is shoot
+                let resultShoot = computerField.fire(h, w, whoseFire: userField.identifier)
+                clearTerminal()
+                printFieldAndMessage(resultShoot[2] as! Message)
+                Thread.sleep(forTimeInterval: 2)
+                if resultShoot[0] as! Bool {
+                    continue askLoop
                 } else {
                     // computer is fire
+                    print("\nХод противника...")
+                    Thread.sleep(forTimeInterval: 1)
                     computerFire(&computerField, &userField)
-                    continue gameLoop
+                    clearTerminal()
+                    printAllField(userField, computerField)
+                    continue askLoop
                 }
             } else if userCommand.count > 0 {
                 switch userCommand[0] {
@@ -66,6 +69,7 @@ func game() -> Bool {
                     print(Message.separator.description)
                     continue askLoop
                 case "exit":
+                    print(Message.separator.description)
                     print(Message.endGame.description)
                     return false
                 case "commands":
@@ -97,7 +101,8 @@ func game() -> Bool {
 clearTerminal()
 print(Message.firstLaunch.description)
 print(Message.separator.description)
-print(Message.setting.description)
+print(Message.setting.description, "\n")
+testField.printBattleground(false)
 print(Message.separator.description)
 print(Message.commands.description)
 print(Message.separator.description)
@@ -114,6 +119,10 @@ startGame: repeat {
     case "start":
         let gameResult = game()
         if gameResult {
+            // new game
+            userField = Battleground(identifier: .user)
+            computerField = Battleground(identifier: .computer)
+            computerField.makeShipInvisible()
             continue startGame
         }
         break startGame
@@ -135,4 +144,3 @@ startGame: repeat {
 } while answer != "exit"
 
 //Thread.sleep(forTimeInterval: 0.099)
-

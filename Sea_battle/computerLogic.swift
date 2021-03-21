@@ -20,6 +20,8 @@ var stateComputer = ComputerMove.shoot
 var lenghtShip = 0
 var rightDirection = true
 var directionForShoot = Direction.east
+var wounded = false
+var killed = false
 
 // create matrix for computer attack
 func createMatrixField() {
@@ -108,7 +110,7 @@ func removeInvalidCell() {
 }
 
 func computerFire(_ computerField: inout Battleground, _ userField: inout Battleground) {
-    var result: (wounded: Bool,killed: Bool)
+    var result: [Any]
     
     repeat {
         switch stateComputer {
@@ -124,26 +126,45 @@ func computerFire(_ computerField: inout Battleground, _ userField: inout Battle
         }
         
         result = userField.fire(nextPoint[0], nextPoint[1], whoseFire: computerField.identifier)
-        print("computerFire: \(nextPoint)")
+        wounded = result[0] as! Bool
+        killed = result[1] as! Bool
         
-        if result.killed {
-            lenghtShip = 0
+        clearTerminal()
+        printAllField(userField, computerField)
+        //Thread.sleep(forTimeInterval: 1)
+        
+        if killed {
             stateComputer = .shoot
             avalibleDirection = [:]
             // add last point ship
             coordinateWounded[nextPoint] = false
             // add free zone for shoot
             removeInvalidCell()
-        } else if result.wounded && !result.killed && lenghtShip >= 2 {
+            switch lenghtShip {
+            case 4:
+                print(Message.battleshipDead.description)
+            case 3:
+                print(Message.cruiserDead.description)
+            case 2:
+                print(Message.destroyerDead.description)
+            default:
+                print(Message.boatDead.description)
+            }
+            lenghtShip = 0
+            Thread.sleep(forTimeInterval: 2)
+        } else if wounded && !killed && lenghtShip >= 2 {
+            print("\nХод противника...")
             lenghtShip += 1
             stateComputer = .finish
             coordinateWounded[nextPoint] = false
             attackField[nextPoint] = false
-        } else if !result.wounded && lenghtShip >= 2 {
+        } else if !wounded && lenghtShip >= 2 {
+            print("\nХод противника...")
             stateComputer = .finish
             rightDirection = false
             nextPoint = firstPoint
-        } else if result.wounded && !result.killed && lenghtShip >= 0 {
+        } else if wounded && !killed && lenghtShip >= 0 {
+            print("\nХод противника...")
             lenghtShip += 1
             rightDirection = true
             coordinateWounded[nextPoint] = false
@@ -154,10 +175,13 @@ func computerFire(_ computerField: inout Battleground, _ userField: inout Battle
                 allAvalibleDirectionShoot()
                 stateComputer = .shootDirection
             }
-        } else if !result.wounded && lenghtShip > 0 {
+        } else if !wounded && lenghtShip > 0 {
+            print("\nХод противника...")
             stateComputer = .shootDirection
         } else {
+            print("\nХод противника...")
             stateComputer = .shoot
         }
-    } while result.wounded
+        Thread.sleep(forTimeInterval: 1)
+    } while wounded
 }

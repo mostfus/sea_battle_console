@@ -207,11 +207,14 @@ struct Battleground {
         }
     }
     
-    mutating func fire(_ height: Int, _ width: Int, whoseFire: Identifier) -> (wounded: Bool,killed: Bool) {
+    
+    
+    mutating func fire(_ height: Int, _ width: Int, whoseFire: Identifier) -> [Any]  { // in return [0] - wounded, [1] - killed, [2] - message
         let h = height
         let w = width
         
         let cell = field[[h, w]]
+        var message: Message
         
         // check shipDeck for input coordinate (h, w)
         ship: for index in arrayShips.indices {
@@ -225,17 +228,30 @@ struct Battleground {
                         for (key, value) in arrayShips[index].shipCoordinate {
                             field[key] = value
                         }
+                        
+                        guard whoseFire == .user else { return [true, true] }
+                        
                         score -= 1
-                        return (true, true)
+                        switch arrayShips[index].size {
+                        case 4:
+                            message = Message.battleshipComputerDead
+                        case 3:
+                            message = Message.cruiserComputerDead
+                        case 2:
+                            message = Message.destroyerComputerDead
+                        default:
+                            message = Message.boatComputerDead
+                        }
+                        return [true, true, message]
                     }
                     score -= 1
-                    guard whoseFire == .computer else { return (true, false) }
-                    print("Есть пробитие!")
-                    return (true, false)
+                    guard whoseFire == .user else { return [true, false] }
+                    message = Message.wounded
+                    return [true, false, message]
                 } else {
-                    guard whoseFire == .computer else { return (false, false) }
-                    print("Ты уже стрелял сюда! Сюда не имеет смысла стрелять.") // add message
-                    return (false, false)
+                    guard whoseFire == .user else { return [false, false] }
+                    message = Message.reShot
+                    return [false, false, message]
                 }
             }
         }
@@ -243,11 +259,13 @@ struct Battleground {
         switch cell {
         case CellType[.sea]:
             field[[h, w]] = CellType[.miss]
-            return (false, false)
+            guard whoseFire == .user else { return [false, false] }
+            message = Message.miss
+            return [false, false, message]
         default:
-            guard whoseFire == .computer else { return (false, false) }
-            print("Ты уже стрелял сюда! Сюда не имеет смысла стрелять.") // add message
-            return (false, false)
+            guard whoseFire == .user else { return [false, false] }
+            message = Message.reShot
+            return [false, false, message]
             
         }
     }
@@ -260,8 +278,7 @@ struct Battleground {
         }
     }
     
-    mutating func printBattleground(_ printShip: Bool, whoseMove: String) {
-        print("\n\(whoseMove)")
+    mutating func printBattleground(_ printShip: Bool) {
         spacePrint("      ")
         //print firstLine Letters
         for i in 1...10 {

@@ -61,5 +61,5 @@ enum CellType: String {
 }
 
 enum Identifier {
-    case user, computer
+    case user, computer, test
 }

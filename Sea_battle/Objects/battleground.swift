@@ -220,9 +220,9 @@ struct Battleground {
                             field[key] = value
                         }
                         
+                        score -= 1
                         guard whoseFire == .user else { return [true, true] }
                         
-                        score -= 1
                         switch arrayShips[index].size {
                         case 4:
                             message = Message.battleshipComputerDead

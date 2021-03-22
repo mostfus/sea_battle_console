@@ -7,6 +7,8 @@
 
 import Foundation
 
+var startIndex = 0
+
 func clearTerminal() {
     let cls = Process()
     let out = Pipe()
@@ -21,6 +23,10 @@ func spacePrint(_ text: Any) {
     print("\(text)", terminator: " ")
 }
 
+func printFieldAndMessage(_ message: Message) {
+    printAllField(userField, computerField)
+    print(message.description)
+}
 
 func printComputerField(_ field: Battleground) {
     if startIndex <= field.fullHeight {
@@ -40,14 +46,15 @@ func printComputerField(_ field: Battleground) {
             spacePrint(cell)
             }
             startIndex += 1
+            if startIndex > 0 && startIndex < 5 {
+                spacePrint(" ")
+                for value in enemyShips[startIndex]! {
+                    print(value, terminator: "")
+                }
+            }
             return
         }
     }
-}
-
-func printFieldAndMessage(_ message: Message) {
-    printAllField(userField, computerField)
-    print(message.description)
 }
 
 func printAllField(_ userField: Battleground, _ computerField: Battleground) {
@@ -94,4 +101,32 @@ func printAllField(_ userField: Battleground, _ computerField: Battleground) {
     }
     print("")
     startIndex = 0
+}
+
+func updEnemyShips(size: Int) {
+    switch size {
+    case 4:
+        enemyShips[size] = [""]
+    case 3:
+        enemyShips[size]?.removeFirst()
+        enemyShips[size]?.removeFirst()
+        enemyShips[size]?.removeFirst()
+        enemyShips[size]?.removeFirst()
+    case 2:
+        enemyShips[size]?.removeFirst()
+        enemyShips[size]?.removeFirst()
+        enemyShips[size]?.removeFirst()
+    default:
+        enemyShips[size]?.removeFirst()
+        enemyShips[size]?.removeFirst()
+    }
+}
+
+func createEnemyShips() {
+    let ship = "\u{25AA}"
+    let space = " "
+    enemyShips[4] = [ship, ship, ship, ship]
+    enemyShips[3] = [ship, ship, ship, space, ship, ship, ship, space]
+    enemyShips[2] = [ship, ship, space, ship, ship, space, ship, ship, space]
+    enemyShips[1] = [ship, space, ship, space, ship, space, ship, space]
 }

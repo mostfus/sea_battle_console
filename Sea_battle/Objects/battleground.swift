@@ -16,7 +16,6 @@ struct Battleground {
     var field = [[Int]: String]()
     var score = 20
     var identifier: Identifier
-    var shootsData = [[Int] : Bool]()
     
     var fullHeight: Int {
         return height + 1
@@ -29,13 +28,6 @@ struct Battleground {
         self.identifier = identifier
         createBattlegroud()
         addShipToBattleground()
-        
-        // create shoots for computer
-        for h in 1...height {
-            for w in 1...width {
-                shootsData[[h, w]] = true
-            }
-        }
     }
     
     // MARK: - Methods
@@ -57,6 +49,7 @@ struct Battleground {
         }
     }
     
+    // search for a place and installation of the ship
     private mutating func createShip(size: Int, direction: Direction) {
         var point = (0, 0)
         var originPoint = (0, 0)
@@ -134,7 +127,6 @@ struct Battleground {
         }
         
         // create ship and add on battleground
-        
         let ship = Ship(size: size, direction: direction, origin: Point(h: originPoint.0, w: originPoint.1))
         arrayShips.append(ship)
         for (key, value) in ship.shipCoordinate {
@@ -156,7 +148,7 @@ struct Battleground {
             size -= 1
         }
         
-        // remove free zone and ships
+        // remove free zone
         for (key, value) in field {
             if value == CellType[.miss] {
                 field[key] = CellType[.sea]
@@ -179,7 +171,6 @@ struct Battleground {
         while lenght > 0 {
             //fire around
             point = originPoint
-            
             point.w += Direction[.east]
             changeCell(point)
             point.h += Direction[.north]
@@ -224,7 +215,7 @@ struct Battleground {
                     field[[h, w]] = State.wounded.rawValue
                     // will launch when ship is dead
                     if arrayShips[index].state == .killed {
-                        addFreeZone(arrayShips[index], CellType[.doNotShoot])
+                        if whoseFire == .user { addFreeZone(arrayShips[index], CellType[.doNotShoot]) }
                         for (key, value) in arrayShips[index].shipCoordinate {
                             field[key] = value
                         }
@@ -242,6 +233,7 @@ struct Battleground {
                         default:
                             message = Message.boatComputerDead
                         }
+                        updEnemyShips(size: arrayShips[index].size)
                         return [true, true, message]
                     }
                     score -= 1

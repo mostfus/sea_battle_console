@@ -10,7 +10,9 @@ import Foundation
 var answer = ""
 let letters = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j"]
 let nums = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]
-var startIndex = 0
+var enemyShips = [Int: [String]]()
+
+// init Battleground for game
 var userField = Battleground(identifier: .user)
 var computerField = Battleground(identifier: .computer)
 computerField.makeShipInvisible()
@@ -18,7 +20,6 @@ var testField = Battleground(identifier: .test)
 
 // function that controls the logic of the game
 func game() -> Bool {
-    // prepare data
     var userCommand = [String]()
     var printLegend = true
     let ask = true
@@ -30,6 +31,7 @@ func game() -> Bool {
     gameLoop: while game {
         if printLegend {
             clearTerminal()
+            createEnemyShips()
             print(Message.legend.description)
             printAllField(userField, computerField)
             print("\nПример команды - b 1 или B 1")
@@ -37,7 +39,18 @@ func game() -> Bool {
         }
         
         askLoop: repeat {
-            print(Message.enterCommand.description)
+            // check win or lose
+            if userField.score <= 0 {
+                print(Message.separator.description)
+                print(Message.lose.description)
+                return true
+            } else if computerField.score <= 0 {
+                print(Message.separator.description)
+                print(Message.win.description)
+                return true
+            }
+            
+            print(Message.userMove.description)
             
             if let answer = readLine() {
                 userCommand = answer.lowercased().split(separator: " ").map(String.init)
@@ -51,6 +64,8 @@ func game() -> Bool {
                 clearTerminal()
                 printFieldAndMessage(resultShoot[2] as! Message)
                 Thread.sleep(forTimeInterval: 2)
+                
+                // hit check
                 if resultShoot[0] as! Bool {
                     continue askLoop
                 } else {
@@ -65,16 +80,16 @@ func game() -> Bool {
             } else if userCommand.count > 0 {
                 switch userCommand[0] {
                 case "rules":
-                    print(Message.rules.description)
                     print(Message.separator.description)
+                    print(Message.rules.description)
                     continue askLoop
                 case "exit":
                     print(Message.separator.description)
                     print(Message.endGame.description)
                     return false
                 case "commands":
-                    print(Message.commands.description)
                     print(Message.separator.description)
+                    print(Message.commands.description)
                     continue askLoop
                 case "start":
                     print(Message.leaveCurrentGame.description)
@@ -83,15 +98,6 @@ func game() -> Bool {
                     print(Message.errorCommand.description)
                     continue askLoop
                 }
-            }
-            
-            // check win or lose
-            if userField.score <= 0 {
-                print(Message.lose.description)
-                return true
-            } else if computerField.score <= 0 {
-                print(Message.win.description)
-                return true
             }
         } while ask
     }
@@ -102,7 +108,7 @@ clearTerminal()
 print(Message.firstLaunch.description)
 print(Message.separator.description)
 print(Message.setting.description, "\n")
-testField.printBattleground(false)
+testField.printBattleground(true)
 print(Message.separator.description)
 print(Message.commands.description)
 print(Message.separator.description)
@@ -115,7 +121,7 @@ startGame: repeat {
         answer = text.lowercased()
     }
     
-    choice: switch answer {
+    switch answer {
     case "start":
         let gameResult = game()
         if gameResult {
@@ -142,5 +148,3 @@ startGame: repeat {
         break
     }
 } while answer != "exit"
-
-//Thread.sleep(forTimeInterval: 0.099)

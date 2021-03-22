@@ -15,15 +15,6 @@ enum Life: Int {
     }
 }
 
-struct Point {
-    var h, w: Int
-}
-
-struct Size {
-    var height: Int
-    var width: Int
-}
-
 enum Direction: Int {
     case north = 1, south, east, west
     
@@ -53,6 +44,14 @@ enum State: String {
     case killed = "❌"
 }
 
+struct Point {
+    var h, w: Int
+}
+
+struct Size {
+    var height: Int
+    var width: Int
+}
 
 struct Ship {
     // MARK: - Properties

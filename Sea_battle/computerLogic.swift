@@ -7,10 +7,6 @@
 
 import Foundation
 
-enum ComputerMove {
-    case shoot, shootDirection, finish
-}
-
 var firstPoint = [Int]()
 var nextPoint = [Int]()
 var avalibleDirection = [[Int]: Direction]()
@@ -22,6 +18,11 @@ var rightDirection = true
 var directionForShoot = Direction.east
 var wounded = false
 var killed = false
+
+// computer State
+enum ComputerMove {
+    case shoot, findDirection, finish
+}
 
 // create matrix for computer attack
 func createMatrixField() {
@@ -70,7 +71,7 @@ func thirdState(direction: Direction) {
             }
         }
         
-        // next cell is avalible on field
+        // if next cell is avalible on field
         if attackField.keys.contains(nextPoint) && attackField[nextPoint] != false {
             break find
         }
@@ -117,7 +118,7 @@ func computerFire(_ computerField: inout Battleground, _ userField: inout Battle
         case .shoot:
             firstState()
             break
-        case .shootDirection:
+        case .findDirection:
             directionForShoot = secondState()
             break
         default:
@@ -131,9 +132,10 @@ func computerFire(_ computerField: inout Battleground, _ userField: inout Battle
         
         clearTerminal()
         printAllField(userField, computerField)
-        //Thread.sleep(forTimeInterval: 1)
         
+        // checking the result of the shot
         if killed {
+            lenghtShip += 1
             stateComputer = .shoot
             avalibleDirection = [:]
             // add last point ship
@@ -173,11 +175,11 @@ func computerFire(_ computerField: inout Battleground, _ userField: inout Battle
                 stateComputer = .finish
             } else {
                 allAvalibleDirectionShoot()
-                stateComputer = .shootDirection
+                stateComputer = .findDirection
             }
         } else if !wounded && lenghtShip > 0 {
             print("\nХод противника...")
-            stateComputer = .shootDirection
+            stateComputer = .findDirection
         } else {
             print("\nХод противника...")
             stateComputer = .shoot
